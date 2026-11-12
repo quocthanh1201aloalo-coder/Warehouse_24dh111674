@@ -1,0 +1,95 @@
+@model Warehouse_24dh111674.Models.ProductFilterViewModel
+@{
+    ViewBag.Title = "Lọc và sắp xếp tồn kho";
+}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-white py-3">
+        <h5 class="mb-0 fw-bold text-primary">Câu 3: Lọc theo danh mục, khoảng tồn kho &amp; sắp xếp</h5>
+    </div>
+    <div class="card-body">
+        @using (Html.BeginForm("Filter", "Products", FormMethod.Get, new { @class = "row g-3 align-items-end" }))
+        {
+            <div class="col-md-4">
+                <label class="form-label fw-semibold" for="category">Danh mục</label>
+                @Html.DropDownList("category", Model.Categories, "-- Tất cả danh mục --", new { @class = "form-select", id = "category" })
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label fw-semibold" for="minQuantity">Từ số lượng</label>
+                <input type="number" name="minQuantity" id="minQuantity" value="@Model.MinQuantity" class="form-control" placeholder="VD: 0" />
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label fw-semibold" for="maxQuantity">Đến số lượng</label>
+                <input type="number" name="maxQuantity" id="maxQuantity" value="@Model.MaxQuantity" class="form-control" placeholder="VD: 10" />
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label fw-semibold" for="sortOrder">Sắp xếp tồn kho</label>
+                <select name="sortOrder" id="sortOrder" class="form-select">
+                    <option value="asc" @(Model.SortOrder != "desc" ? "selected" : "")>Quantity tăng dần</option>
+                    <option value="desc" @(Model.SortOrder == "desc" ? "selected" : "")>Quantity giảm dần</option>
+                </select>
+            </div>
+
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary w-100">Lọc</button>
+                <a href="@Url.Action("Filter", "Products")" class="btn btn-outline-secondary">Đặt lại</a>
+            </div>
+        }
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger mt-3 mb-0">
+                @Html.ValidationSummary(false, "Lỗi điều kiện lọc:")
+            </div>
+        }
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white fw-semibold">
+        Kết quả lọc (@Model.Products.Count sản phẩm)
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Danh mục</th>
+                        <th class="text-end">Đơn giá</th>
+                        <th class="text-center">Số lượng (Quantity)</th>
+                        <th class="text-center">Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Products.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">Không có sản phẩm nào phù hợp điều kiện lọc.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model.Products)
+                        {
+                            <tr>
+                                <td>@item.ProductID</td>
+                                <td class="fw-semibold">@item.ProductName</td>
+                                <td>@item.Category</td>
+                                <td class="text-end">@item.Price.ToString("N2") VNĐ</td>
+                                <td class="text-center fw-bold">@item.Quantity</td>
+                                <td class="text-center">
+                                    <span class="badge @item.StockBadgeClass">@item.StockStatus</span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

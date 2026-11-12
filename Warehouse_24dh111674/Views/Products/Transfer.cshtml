@@ -1,0 +1,78 @@
+@model Warehouse_24dh111674.Models.TransferViewModel
+@{
+    ViewBag.Title = "Điều chuyển hàng giữa hai sản phẩm";
+}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-white py-3">
+        <h5 class="mb-0 fw-bold text-primary">Câu 5: Điều chuyển hàng giữa hai sản phẩm (cùng danh mục, trong Transaction)</h5>
+    </div>
+    <div class="card-body">
+        @using (Html.BeginForm("Transfer", "Products", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    @Html.ValidationSummary(false, "Điều chuyển không hợp lệ:")
+                </div>
+            }
+
+            <div class="row g-3">
+                <div class="col-md-5">
+                    @Html.LabelFor(m => m.SourceProductID, new { @class = "form-label fw-semibold" })
+                    @Html.DropDownListFor(m => m.SourceProductID, Model.ProductOptions, "-- Chọn sản phẩm nguồn (A) --", new { @class = "form-select" })
+                    @Html.ValidationMessageFor(m => m.SourceProductID, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="col-md-5">
+                    @Html.LabelFor(m => m.DestinationProductID, new { @class = "form-label fw-semibold" })
+                    @Html.DropDownListFor(m => m.DestinationProductID, Model.ProductOptions, "-- Chọn sản phẩm đích (B) --", new { @class = "form-select" })
+                    @Html.ValidationMessageFor(m => m.DestinationProductID, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="col-md-2">
+                    @Html.LabelFor(m => m.Quantity, new { @class = "form-label fw-semibold" })
+                    @Html.TextBoxFor(m => m.Quantity, new { @class = "form-control", type = "number", placeholder = "q > 0" })
+                    @Html.ValidationMessageFor(m => m.Quantity, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Thực hiện điều chuyển</button>
+                    <a href="@Url.Action("Index", "Products")" class="btn btn-outline-secondary ms-2">Về danh sách</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white fw-semibold">Danh sách sản phẩm hiện tại (để đối chiếu trước/sau điều chuyển)</div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Danh mục</th>
+                        <th class="text-center">Số lượng</th>
+                        <th class="text-center">Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model.Products)
+                    {
+                        <tr>
+                            <td>@p.ProductID</td>
+                            <td class="fw-semibold">@p.ProductName</td>
+                            <td>@p.Category</td>
+                            <td class="text-center fw-bold">@p.Quantity</td>
+                            <td class="text-center"><span class="badge @p.StockBadgeClass">@p.StockStatus</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

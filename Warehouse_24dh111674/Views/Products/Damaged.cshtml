@@ -1,0 +1,71 @@
+@model Warehouse_24dh111674.Models.StockAdjustViewModel
+@{
+    ViewBag.Title = "Ghi nhận hàng hỏng";
+}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-white py-3">
+        <h5 class="mb-0 fw-bold text-primary">Câu 4b: Ghi nhận hàng hỏng (Giảm tồn kho)</h5>
+    </div>
+    <div class="card-body">
+        @using (Html.BeginForm("Damaged", "Products", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    @Html.ValidationSummary(false, "Không thể cập nhật tồn kho:")
+                </div>
+            }
+
+            <div class="row g-3">
+                <div class="col-md-7">
+                    @Html.LabelFor(m => m.ProductID, new { @class = "form-label fw-semibold" })
+                    @Html.DropDownListFor(m => m.ProductID, Model.ProductOptions, "-- Chọn sản phẩm --", new { @class = "form-select" })
+                    @Html.ValidationMessageFor(m => m.ProductID, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold" for="Amount">Số lượng bị hỏng (&gt; 0)</label>
+                    @Html.TextBoxFor(m => m.Amount, new { @class = "form-control", type = "number", placeholder = "Nhập số nguyên dương" })
+                    @Html.ValidationMessageFor(m => m.Amount, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-warning w-100 fw-semibold">Ghi nhận</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white fw-semibold">Tồn kho hiện tại</div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Danh mục</th>
+                        <th class="text-center">Số lượng</th>
+                        <th class="text-center">Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model.Products)
+                    {
+                        <tr>
+                            <td>@p.ProductID</td>
+                            <td>@p.ProductName</td>
+                            <td>@p.Category</td>
+                            <td class="text-center fw-bold">@p.Quantity</td>
+                            <td class="text-center"><span class="badge @p.StockBadgeClass">@p.StockStatus</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

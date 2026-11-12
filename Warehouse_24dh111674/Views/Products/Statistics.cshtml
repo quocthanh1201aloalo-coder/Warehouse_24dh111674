@@ -1,0 +1,89 @@
+@model Warehouse_24dh111674.Models.InventoryStatisticsViewModel
+@{
+    ViewBag.Title = "Thống kê tồn kho";
+}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-white py-3">
+        <h5 class="mb-0 fw-bold text-primary">Câu 7: Thống kê tồn kho (LINQ &amp; Entity Framework)</h5>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="card border-primary h-100">
+                    <div class="card-body text-center">
+                        <div class="text-muted fw-semibold mb-1">Tổng số sản phẩm</div>
+                        <div class="display-5 fw-bold text-primary">@Model.TotalProducts</div>
+                        <small class="text-muted">mặt hàng trong CSDL</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-success h-100">
+                    <div class="card-body text-center">
+                        <div class="text-muted fw-semibold mb-1">Tổng số đơn vị hàng còn trong kho</div>
+                        <div class="display-5 fw-bold text-success">@Model.TotalUnitsInStock</div>
+                        <small class="text-muted">SUM(Quantity)</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-warning h-100">
+                    <div class="card-body text-center">
+                        <div class="text-muted fw-semibold mb-1">Số sản phẩm sắp hết</div>
+                        <div class="display-5 fw-bold text-warning">@Model.LowStockProductsCount</div>
+                        <small class="text-muted">Quantity từ 1 đến 4</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mt-2">
+            <div class="col-md-6">
+                <div class="alert alert-danger mb-0 d-flex justify-content-between">
+                    <span>Sản phẩm hết hàng (Quantity = 0):</span>
+                    <strong>@Model.OutOfStockProductsCount</strong>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="alert alert-success mb-0 d-flex justify-content-between">
+                    <span>Sản phẩm còn hàng (Quantity &ge; 5):</span>
+                    <strong>@Model.InStockProductsCount</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white fw-semibold">Thống kê chi tiết theo danh mục</div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Danh mục</th>
+                        <th class="text-center">Số sản phẩm</th>
+                        <th class="text-center">Tổng đơn vị tồn</th>
+                        <th class="text-center">Sắp hết (1–4)</th>
+                        <th class="text-center">Hết hàng (= 0)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cat in Model.CategoryBreakdown)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@cat.Category</td>
+                            <td class="text-center">@cat.ProductCount</td>
+                            <td class="text-center fw-bold">@cat.TotalUnits</td>
+                            <td class="text-center"><span class="badge bg-warning text-dark">@cat.LowStockCount</span></td>
+                            <td class="text-center"><span class="badge bg-danger">@cat.OutOfStockCount</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

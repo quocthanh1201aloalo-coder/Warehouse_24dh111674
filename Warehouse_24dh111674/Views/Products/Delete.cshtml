@@ -1,0 +1,42 @@
+@model Warehouse_24dh111674.Models.Product
+@{
+    ViewBag.Title = "Xác nhận xóa sản phẩm";
+}
+
+<div class="card shadow-sm border-danger">
+    <div class="card-header bg-danger text-white fw-bold">
+        Xác nhận xóa sản phẩm hết hàng (Câu 2b)
+    </div>
+    <div class="card-body">
+        <div class="alert alert-warning">
+            Bạn có chắc chắn muốn xóa sản phẩm dưới đây khỏi kho hàng không? Thao tác này không thể hoàn tác.
+        </div>
+
+        <dl class="row mb-4">
+            <dt class="col-sm-3">Mã sản phẩm (ProductID):</dt>
+            <dd class="col-sm-9">@Model.ProductID</dd>
+
+            <dt class="col-sm-3">Tên sản phẩm:</dt>
+            <dd class="col-sm-9 fw-bold">@Model.ProductName</dd>
+
+            <dt class="col-sm-3">Danh mục:</dt>
+            <dd class="col-sm-9">@Model.Category</dd>
+
+            <dt class="col-sm-3">Đơn giá:</dt>
+            <dd class="col-sm-9">@Model.Price.ToString("N2") VNĐ</dd>
+
+            <dt class="col-sm-3">Số lượng tồn:</dt>
+            <dd class="col-sm-9">
+                @Model.Quantity
+                <span class="badge @Model.StockBadgeClass ms-2">@Model.StockStatus</span>
+            </dd>
+        </dl>
+
+        @using (Html.BeginForm("Delete", "Products", new { id = Model.ProductID }, FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-danger me-2">Xác nhận xóa</button>
+            <a href="@Url.Action("Index", "Products")" class="btn btn-secondary">Hủy &amp; Quay lại</a>
+        }
+    </div>
+</div>
